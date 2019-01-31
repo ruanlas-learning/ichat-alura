@@ -7,21 +7,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.example.ruan.ichat_alura.callback.EnviarMensagemCallback;
+import com.example.ruan.ichat_alura.callback.OuvirMensagensCallback;
 import com.example.ruan.ichat_alura.R;
 import com.example.ruan.ichat_alura.adapter.MensagemAdapter;
-import com.example.ruan.ichat_alura.service.ChatService;
 import com.example.ruan.ichat_alura.modelo.Mensagem;
+import com.example.ruan.ichat_alura.service.IChatService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
     private int idDoCliente = 1;
     private ListView listaDeMensagens;
     private List<Mensagem> mensagens;
-    private ChatService chatService;
+//    private ChatService chatService;
+    private IChatService chatService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,14 +42,21 @@ public class MainActivity extends AppCompatActivity {
 
         final EditText editText = findViewById(R.id.et_texto);
 
-        chatService = new ChatService(this);
-        chatService.ouvirMensagens();
+//        chatService = new ChatService(this);
+        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("http://192.168.1.34:8080/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+        chatService = retrofit.create(IChatService.class);
+//        Call<Mensagem> call = chatService.ouvirMensagens();
+//        call.enqueue(new OuvirMensagensCallback(this));
+        ouvirMensagens();
 
         Button button = findViewById(R.id.botao_enviar);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chatService.enviar(new Mensagem(idDoCliente, editText.getText().toString()));
+                chatService.enviar(new Mensagem(idDoCliente, editText.getText().toString())).enqueue(new EnviarMensagemCallback());
             }
         });
     }
@@ -53,6 +66,11 @@ public class MainActivity extends AppCompatActivity {
         MensagemAdapter adapter = new MensagemAdapter(mensagens, this, idDoCliente);
         listaDeMensagens.setAdapter(adapter);
 
-        chatService.ouvirMensagens();
+//        chatService.ouvirMensagens().enqueue(new OuvirMensagensCallback(this));
+        ouvirMensagens();
+    }
+
+    public void ouvirMensagens(){
+        chatService.ouvirMensagens().enqueue(new OuvirMensagensCallback(this));
     }
 }
