@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.example.ruan.ichat_alura.component.ChatComponent;
 import com.example.ruan.ichat_alura.component.DaggerChatComponent;
+import com.example.ruan.ichat_alura.module.ChatModule;
 
 public class ChatApplication extends Application {
     private ChatComponent component;
@@ -11,7 +12,9 @@ public class ChatApplication extends Application {
     @Override
     public void onCreate() {
 //        super.onCreate();
-        component = DaggerChatComponent.builder().build();
+        component = DaggerChatComponent.builder()
+                .chatModule(new ChatModule(this))
+                .build();
     }
 
     public ChatComponent getComponent(){
