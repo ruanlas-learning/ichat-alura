@@ -7,19 +7,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.example.ruan.ichat_alura.app.ChatApplication;
 import com.example.ruan.ichat_alura.callback.EnviarMensagemCallback;
 import com.example.ruan.ichat_alura.callback.OuvirMensagensCallback;
 import com.example.ruan.ichat_alura.R;
 import com.example.ruan.ichat_alura.adapter.MensagemAdapter;
+import com.example.ruan.ichat_alura.component.ChatComponent;
 import com.example.ruan.ichat_alura.modelo.Mensagem;
 import com.example.ruan.ichat_alura.service.IChatService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,12 +27,18 @@ public class MainActivity extends AppCompatActivity {
     private ListView listaDeMensagens;
     private List<Mensagem> mensagens;
 //    private ChatService chatService;
-    private IChatService chatService;
+    @Inject
+    IChatService chatService;
+    private ChatComponent component;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ChatApplication app = (ChatApplication) getApplication();
+        component = app.getComponent();
+        component.inject(this);
 
         listaDeMensagens = findViewById(R.id.lv_mensagens);
 //        mensagens = Arrays.asList(new Mensagem(1, "olá alunos de android"), new Mensagem(2, "Oi"));
@@ -43,11 +49,7 @@ public class MainActivity extends AppCompatActivity {
         final EditText editText = findViewById(R.id.et_texto);
 
 //        chatService = new ChatService(this);
-        Retrofit retrofit = new Retrofit.Builder()
-                                .baseUrl("http://192.168.1.34:8080/")
-                                .addConverterFactory(GsonConverterFactory.create())
-                                .build();
-        chatService = retrofit.create(IChatService.class);
+
 //        Call<Mensagem> call = chatService.ouvirMensagens();
 //        call.enqueue(new OuvirMensagensCallback(this));
         ouvirMensagens();
