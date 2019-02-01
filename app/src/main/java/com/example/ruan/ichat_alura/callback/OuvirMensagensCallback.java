@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.example.ruan.ichat_alura.activity.MainActivity;
+import com.example.ruan.ichat_alura.event.FailureEvent;
 import com.example.ruan.ichat_alura.event.MensagemEvent;
 import com.example.ruan.ichat_alura.modelo.Mensagem;
 
@@ -41,5 +42,6 @@ public class OuvirMensagensCallback implements retrofit2.Callback<Mensagem> {
     @Override
     public void onFailure(Call<Mensagem> call, Throwable t) {
 //        activity.ouvirMensagens();
+        eventBus.post(new FailureEvent());
     }
 }

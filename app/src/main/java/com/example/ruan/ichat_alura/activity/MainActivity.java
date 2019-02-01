@@ -19,6 +19,7 @@ import com.example.ruan.ichat_alura.callback.OuvirMensagensCallback;
 import com.example.ruan.ichat_alura.R;
 import com.example.ruan.ichat_alura.adapter.MensagemAdapter;
 import com.example.ruan.ichat_alura.component.ChatComponent;
+import com.example.ruan.ichat_alura.event.FailureEvent;
 import com.example.ruan.ichat_alura.event.MensagemEvent;
 import com.example.ruan.ichat_alura.modelo.Mensagem;
 import com.example.ruan.ichat_alura.service.IChatService;
@@ -120,6 +121,11 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe
     public void ouvirMensagens(MensagemEvent mensagemEvent){
         chatService.ouvirMensagens().enqueue(new OuvirMensagensCallback(eventBus, this));
+    }
+
+    @Subscribe
+    public void lidaCom(FailureEvent failureEvent){
+        ouvirMensagens(new MensagemEvent(null));
     }
 
     @Override
