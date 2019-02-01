@@ -65,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     EventBus eventBus;
 
+    @Inject
+    InputMethodManager inputMethodManager;
+
 //    private BroadcastReceiver receiver = new BroadcastReceiver() {
 //        @Override
 //        public void onReceive(Context context, Intent intent) {
@@ -113,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
     public void enviarMensagem(){
         chatService.enviar(new Mensagem(idDoCliente, editText.getText().toString())).enqueue(new EnviarMensagemCallback());
         editText.getText().clear();
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+//        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 
