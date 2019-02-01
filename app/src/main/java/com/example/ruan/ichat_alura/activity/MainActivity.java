@@ -4,10 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.PersistableBundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -85,8 +87,13 @@ public class MainActivity extends AppCompatActivity {
         component.inject(this);
 
 
+        if (savedInstanceState != null){
+            mensagens = (List<Mensagem>) savedInstanceState.getSerializable("mensagens");
+        }else {
 //        mensagens = Arrays.asList(new Mensagem(1, "olá alunos de android"), new Mensagem(2, "Oi"));
-        mensagens = new ArrayList<>();
+            mensagens = new ArrayList<>();
+        }
+
         MensagemAdapter adapter = new MensagemAdapter(mensagens, this, idDoCliente);
         listaDeMensagens.setAdapter(adapter);
 
@@ -105,6 +112,9 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.botao_enviar)
     public void enviarMensagem(){
         chatService.enviar(new Mensagem(idDoCliente, editText.getText().toString())).enqueue(new EnviarMensagemCallback());
+        editText.getText().clear();
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 
     @Subscribe
@@ -136,4 +146,21 @@ public class MainActivity extends AppCompatActivity {
 //        localBroadcastManager.unregisterReceiver(receiver);
         eventBus.unregister(this);
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putSerializable("mensagens", (ArrayList<Mensagem>) mensagens);
+    }
+
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//        if (savedInstanceState != null){
+//            mensagens = (List<Mensagem>) savedInstanceState.getSerializable("mensagens");
+//        }else {
+//            mensagens = new ArrayList<>();
+//        }
+//    }
 }
