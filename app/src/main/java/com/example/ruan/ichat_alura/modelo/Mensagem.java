@@ -2,7 +2,9 @@ package com.example.ruan.ichat_alura.modelo;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Mensagem {
+import java.io.Serializable;
+
+public class Mensagem implements Serializable {
     private int id;
     @SerializedName("text")
     private String texto;

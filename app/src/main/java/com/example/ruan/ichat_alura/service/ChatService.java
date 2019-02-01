@@ -87,7 +87,7 @@ public class ChatService {
                     mainActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mainActivity.colocaNaList(mensagem);
+//                            mainActivity.colocaNaList(mensagem);
                         }
                     });
 
